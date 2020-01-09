@@ -78,4 +78,25 @@ $ git checkout -- test.txt
 ```
 git checkout其实是用版本库里的版本替换工作区的版本，无论工作区是修改还是删除，都可以“一键还原”。
 ## 远程仓库
+```
+ssh-keygen -t rsa -C "youremail@example.com"
+```
+生成秘钥和github绑定
 ### 添加远程仓库
+### 从远程仓库clone
+1. 从远程拉一个文件夹到本地
+```
+git clone https://github.com/shankace/learning-files.git
+```
+会在当前目录创建learning-files文件夹。
+2. 提交文件
+* 提交所有文件
+```
+git add .
+```
+* 提交单个文件
+```
+git add <filename>
+git commit -m "message"
+git push origin master
+```
