@@ -88,7 +88,7 @@ ssh-keygen -t rsa -C "youremail@example.com"
 ```
 git clone https://github.com/shankace/learning-files.git
 ```
-会在当前目录创建learning-files文件夹。
+会在当前目录创建learning-files文件夹。  
 2. 提交文件
 * 提交所有文件
 ```
