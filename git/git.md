@@ -83,6 +83,7 @@ ssh-keygen -t rsa -C "youremail@example.com"
 ```
 生成秘钥和github绑定
 ### 添加远程仓库
+在github界面创建一个远程库
 ### 从远程仓库clone
 1. 从远程拉一个文件夹到本地
 ```
