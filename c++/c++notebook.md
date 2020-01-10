@@ -666,3 +666,299 @@ int main(void)
    return 0;
 }
 ```
+## 异常处理
+### 抛出异常
+```
+double division(int a, int b)
+{
+   if( b == 0 )
+   {
+      throw "Division by zero condition!";
+   }
+   return (a/b);
+}
+```
+### 捕获异常
+```
+try
+{
+   // 保护代码
+}catch( ExceptionName e )
+{
+  // 处理 ExceptionName 异常的代码
+}
+```
+## c++动态内存
+* 栈：在函数内部声明的所有变量都将占用栈内存。
+* 堆：这是程序中未使用的内存，在程序运行时可用于动态分配内存。
+在 C++ 中，您可以使用特殊的运算符为给定类型的变量在运行时分配堆内的内存，这会返回所分配的空间地址。这种运算符即 new 运算符。如果您不再需要动态分配的内存空间，可以使用 delete 运算符，删除之前由 new 运算符分配的内存。
+```
+double* pvalue  = NULL; // 初始化为 null 的指针
+pvalue  = new double;   // 为变量请求内存
+```
+如果自由存储区已被用完，可能无法成功分配内存。所以建议检查 new 运算符是否返回 NULL 指针，并采取以下适当的操作:
+```
+double* pvalue  = NULL;
+if( !(pvalue  = new double ))
+{
+   cout << "Error: out of memory." <<endl;
+   exit(1);
+ 
+}
+```
+释放内存
+```
+delete pvalue;        // 释放 pvalue 所指向的内存
+```
+实例概念:
+```
+#include <iostream>
+using namespace std;
+ 
+int main ()
+{
+   double* pvalue  = NULL; // 初始化为 null 的指针
+   pvalue  = new double;   // 为变量请求内存
+ 
+   *pvalue = 29494.99;     // 在分配的地址存储值
+   cout << "Value of pvalue : " << *pvalue << endl;
+ 
+   delete pvalue;         // 释放内存
+ 
+   return 0;
+}
+```
+### 数组动态内存分配
+* 一维数组
+```
+// 动态分配,数组长度为 m
+int *array=new int [m]；
+ 
+//释放内存
+delete [] array;
+```
+* 二维数组
+```
+int **array
+// 假定数组第一维长度为 m， 第二维长度为 n
+// 动态分配空间
+array = new int *[m];
+for( int i=0; i<m; i++ )
+{
+    array[i] = new int [n]  ;
+}
+//释放
+for( int i=0; i<m; i++ )
+{
+    delete [] array[i];
+}
+delete [] array;
+```
+* 三维数组
+```
+int ***array;
+// 假定数组第一维为 m， 第二维为 n， 第三维为h
+// 动态分配空间
+array = new int **[m];
+for( int i=0; i<m; i++ )
+{
+    array[i] = new int *[n];
+    for( int j=0; j<n; j++ )
+    {
+        array[i][j] = new int [h];
+    }
+}
+//释放
+for( int i=0; i<m; i++ )
+{
+    for( int j=0; j<n; j++ )
+    {
+        delete[] array[i][j];
+    }
+    delete[] array[i];
+}
+delete[] array;
+```
+### 对象的动态内存分配
+```
+#include <iostream>
+using namespace std;
+ 
+class Box
+{
+   public:
+      Box() { 
+         cout << "调用构造函数！" <<endl; 
+      }
+      ~Box() { 
+         cout << "调用析构函数！" <<endl; 
+      }
+};
+ 
+int main( )
+{
+   Box* myBoxArray = new Box[4];
+ 
+   delete [] myBoxArray; // 删除数组
+   return 0;
+}
+```
+## c++命名空间
+引入了命名空间这个概念，专门用于解决上面的问题，它可作为附加信息来区分不同库中相同名称的函数、类、变量等。使用了命名空间即定义了上下文。本质上，命名空间就是定义了一个范围。
+### 定义命名空间和调用
+```
+namespace namespace_name {
+   // 代码声明
+}
+name::code;  // code 可以是变量或函数
+```
+实例
+```
+#include <iostream>
+using namespace std;
+ 
+// 第一个命名空间
+namespace first_space{
+   void func(){
+      cout << "Inside first_space" << endl;
+   }
+}
+// 第二个命名空间
+namespace second_space{
+   void func(){
+      cout << "Inside second_space" << endl;
+   }
+}
+int main ()
+{
+ 
+   // 调用第一个命名空间中的函数
+   first_space::func();
+   
+   // 调用第二个命名空间中的函数
+   second_space::func(); 
+ 
+   return 0;
+}
+```
+### using指令
+您可以使用 using namespace 指令，这样在使用命名空间时就可以不用在前面加上命名空间的名称。
+```
+#include <iostream>
+using namespace std;
+ 
+// 第一个命名空间
+namespace first_space{
+   void func(){
+      cout << "Inside first_space" << endl;
+   }
+}
+// 第二个命名空间
+namespace second_space{
+   void func(){
+      cout << "Inside second_space" << endl;
+   }
+}
+using namespace first_space;
+int main ()
+{
+ 
+   // 调用第一个命名空间中的函数
+   func();
+   
+   return 0;
+}
+```
+### 不连续的命名空间
+命名空间可以定义在几个不同的部分中，因此命名空间是由几个单独定义的部分组成的。一个命名空间的各个组成部分可以分散在多个文件中。所以，如果命名空间中的某个组成部分需要请求定义在另一个文件中的名称，则仍然需要声明该名称。命名空间定义可以是定义一个新的命名空间，也可以是为已有的命名空间增加新的元素。
+### 嵌套的命名空间
+```
+namespace namespace_name1 {
+   // 代码声明
+   namespace namespace_name2 {
+      // 代码声明
+   }
+}
+```
+可以通过使用 :: 运算符来访问嵌套的命名空间中的成员
+```
+// 访问 namespace_name2 中的成员
+using namespace namespace_name1::namespace_name2;
+ // 访问 namespace:name1 中的成员
+using namespace namespace_name1;
+```
+## c++模板
+模板是泛型编程的基础，泛型编程即以一种独立于任何特定类型的方式编写代码。模板是创建泛型类或函数的蓝图或公式。库容器，比如迭代器和算法，都是泛型编程的例子，它们都使用了模板的概念。每个容器都有一个单一的定义，比如 向量，我们可以定义许多不同类型的向量，比如 vector \<int> 或 vector \<string>。
+### 函数模板
+#include <iostream>
+#include <string>
+ 
+using namespace std;
+ 
+template <typename T>
+inline T const& Max (T const& a, T const& b) 
+{ 
+    return a < b ? b:a; 
+} 
+int main ()
+{
+ 
+    int i = 39;
+    int j = 20;
+    cout << "Max(i, j): " << Max(i, j) << endl; 
+ 
+    double f1 = 13.5; 
+    double f2 = 20.7; 
+    cout << "Max(f1, f2): " << Max(f1, f2) << endl; 
+ 
+    string s1 = "Hello"; 
+    string s2 = "World"; 
+    cout << "Max(s1, s2): " << Max(s1, s2) << endl; 
+ 
+   return 0;
+}
+### 类模板
+```
+template <class T>
+class Stack { 
+  private: 
+    vector<T> elems;     // 元素 
+ 
+  public: 
+    void push(T const&);  // 入栈
+    void pop();               // 出栈
+    T top() const;            // 返回栈顶元素
+    bool empty() const{       // 如果为空则返回真。
+        return elems.empty(); 
+    } 
+}; 
+```
+## 预处理
+### #define 预处理
+```
+#define PI 3.14159
+```
+### 参数宏
+```
+#include <iostream>
+using namespace std;
+ 
+#define MIN(a,b) (a<b ? a : b)
+ 
+int main ()
+{
+   int i, j;
+   i = 100;
+   j = 30;
+   cout <<"较小的值为：" << MIN(i, j) << endl;
+ 
+    return 0;
+}
+```
+### 预定义宏
+宏|描述
+-|-
+\_\_LINE__| 这会在程序编译时包含当前行号。
+\_\_FILE__|	这会在程序编译时包含当前文件名。
+\_\_DATE__|这会包含一个形式为 month/day/year 的字符串，它表示把源文件转换为目标代码的日期。
+\_\_TIME__|这会包含一个形式为 hour:minute:second 的字符串，它表示程序被编译的时间。
