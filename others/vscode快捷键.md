@@ -6,4 +6,6 @@ Ctrl + Shift + K 删除行
 
 Ctrl + Enter 在当前行下插入新的一行
 
-Alt+Shift+A 块注释
+Alt + Shift + A 块注释
+
+Shift + Alt + F 格式化代码
