@@ -181,3 +181,9 @@ val df2RDD = df.as[Spu].rdd
 
 ```
 
+或者采用sql的一些表达方式处理dataframe
+
+```scala
+df = mergeDF.selectExpr("store_code", "day_night", "if(count>=6, categorycode2, 'xxx') as categorycode2", "spucode", "nums", "count")  //每个字符串代表一个字段，里面可以加入一些sparksql自带的函数进行处理
+```
+
