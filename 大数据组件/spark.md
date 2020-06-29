@@ -162,3 +162,28 @@ bypass运行机制的触发条件如下：
 而该机制与普通SortShuffleManager运行机制的不同在于：  
 第一，磁盘写机制不同;  
 第二，不会进行排序。也就是说，启用该机制的最大好处在于，shuffle write过程中，不需要进行数据的排序操作，也就节省掉了这部分的性能开销。
+
+### spark df中的map
+
+如果要行数据进行比较复杂的操作，需要将DF先转成RDD，最后完成之后再将RDD转回DF。
+
+```scala
+case class Spu(categorycode2: String, spucode: String, nums: BigInt, store_code: String, day_night: String, count: BigInt)
+// 将count值小于6的categorycode2赋值为"xxx"
+val df2RDD = df.as[Spu].rdd
+        val resDF = df2RDD.map(row => {
+            if (row.count < 6)
+                Spu("xxx", row.spucode, row.nums, row.store_code, row.day_night, row.count)
+            else
+                row
+        }).toDF()
+        resDF
+
+```
+
+或者采用sql的一些表达方式处理dataframe
+
+```scala
+df = mergeDF.selectExpr("store_code", "day_night", "if(count>=6, categorycode2, 'xxx') as categorycode2", "spucode", "nums", "count")  //每个字符串代表一个字段，里面可以加入一些sparksql自带的函数进行处理
+```
+
