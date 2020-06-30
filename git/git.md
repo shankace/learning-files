@@ -103,3 +103,102 @@ git add <filename>
 git commit -m "message"
 git push origin master
 ```
+
+## git文件存储和状态转换
+
+![](E:\github仓库\learning-files\git\文件存储状态.png)
+
+------
+
+![](E:\github仓库\learning-files\git\文件状态.png)
+
+## git 分支
+
+### 分支的概念
+
+我们习惯于将分支仓库的概念等同于版本库，其实二者完全不同的两种概念。当一个版本库被创建成功时，它会默认的为我们创建一个 master 分支仓库。实际上，一个版本库中会有很多个分支仓库。
+
+![](E:\github仓库\learning-files\git\分支概念.png)
+
+### 分支操作
+
+```
+git branch test  // 创建test分支
+git branch -d test  // 删除分支
+git checkout master  // 切换分支
+git checkout -b  //创建并进入分支
+gitk --all  // 查看分支状态
+git log --oneline  // 查看提交日志
+```
+
+### 分支合并
+
+合并分支有两种方法，merge和rebase方法。
+
+init一个新的仓库，commit一个README.md文件。创建一个分支b1。在master分支中分三次commit 1 2 3得到README.md文件：
+
+```
+1
+2
+3
+```
+
+在b1分支的README.md文件中分三次commit a b c得到README.md文件：
+
+```
+a
+b
+c
+```
+
+这里两个分支进行commit是没有冲突的，因为commit到两个分支各自的仓库中。此时分支的状态：
+
+![](E:\github仓库\learning-files\git\分支.png)
+
+1）git merge方法
+
+```
+git merge b1 // 在master分支合并b1
+```
+
+出现冲突：
+
+```
+<<<<<<< HEAD
+1
+2
+3
+=======
+a
+b
+c
+>>>>>>> b1
+```
+
+- <<<< << HEAD到 ===== 是master中存在，b1中不存在的部分
+- ===== 到>>>>> b1 是b1中存在，master中不存在的部分
+
+解决冲突的方法，两个都留或者留一个都可以。都保留的情况：
+
+```
+1
+2
+3
+a
+b
+c
+```
+
+```
+git add README.md
+git commit -m "解决完冲突"
+```
+
+![](E:\github仓库\learning-files\git\merge.png)
+
+2）rebase
+
+```
+
+```
+
