@@ -23,8 +23,8 @@ git commit -m "add 3 files."
 ### 版本回退
 版本控制系统肯定有某个命令可以告诉我们历史记录，在Git中，我们用git log命令查看
 ```
-git log  # 命令显示从最近到最远的提交日志, 如果嫌输出信息太多，看得眼花缭乱的，可以试试加上--pretty=oneline参数
-git log --pretty=oneline
+git log  # 命令显示从最近到最远的提交日志, 如果嫌输出信息太多，看得眼花缭乱的，可以试试加上
+git log --oneline
 ```
 首先，Git必须知道当前版本是哪个版本，在Git中，用HEAD表示当前版本，也就是最新的提交1094adb...（注意我的提交ID和你的肯定不一样），上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100。
 ```
@@ -106,11 +106,11 @@ git push origin master
 
 ## git文件存储和状态转换
 
-![](E:\github仓库\learning-files\git\文件存储状态.png)
+![](文件存储状态.png)
 
 ------
 
-![](E:\github仓库\learning-files\git\文件状态.png)
+![](文件状态.png)
 
 ## git 分支
 
@@ -118,7 +118,7 @@ git push origin master
 
 我们习惯于将分支仓库的概念等同于版本库，其实二者完全不同的两种概念。当一个版本库被创建成功时，它会默认的为我们创建一个 master 分支仓库。实际上，一个版本库中会有很多个分支仓库。
 
-![](E:\github仓库\learning-files\git\分支概念.png)
+![](分支概念.png)
 
 ### 分支操作
 
@@ -153,7 +153,7 @@ c
 
 这里两个分支进行commit是没有冲突的，因为commit到两个分支各自的仓库中。此时分支的状态：
 
-![](E:\github仓库\learning-files\git\分支.png)
+![](分支.png)
 
 1）git merge方法
 
@@ -191,14 +191,24 @@ c
 
 ```
 git add README.md
-git commit -m "解决完冲突"
+git commit -m "解决冲突"
 ```
 
-![](E:\github仓库\learning-files\git\merge.png)
+![](merge.png)
+
+此时master仓库已经将b1中的内容merge，但是b1仓库并没有merge master仓库中的内容。
 
 2）rebase
 
-```
+merge是一次解决所有冲突，rebase是分多次解决冲突。
 
 ```
+git rebase master  // 将master合并到b1
+vim README.md  // 解决冲突
+git add README.md  // 提交到stage
+git rebase --continue  // 反复执行2-4行命令直到rebase成功，不需要commit
+```
 
+![](rebase.png)
+
+结果是将master分支rebase到了b1的线上。b1合并了master的内容，但是master没有合并b1的内容，此时切换到master中执行git rebase b1不需要再解决冲突就能合并成功，master就会和b1在同一个节点上。
