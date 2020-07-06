@@ -161,6 +161,8 @@ arr.length;
 
 ## Java注解
 
+
+
 ## Java反射机制
 
 一个类有：成员变量、方法、构造方法、包等等信息，利用反射技术可以对一个类进行解剖，把个个组成部分映射成一个个对象。
@@ -248,4 +250,234 @@ m.setAccessible(true);  //解除私有限定
 m.invoke(obj, "中文")  // 调用learn方法，一个是调用对象，另一个是实参。当m时静态方法时，obj可以用null
 ```
 
+## Java内部类
 
+### 实例内部类
+
+```java
+class Outter{
+    public String attr = "outter";
+    class Inner{
+        public String attr = "inner";
+        public void play(){
+            System.out.println(this.attr);
+            System.out.println(Outter.this.attr);  // 调用外部类成员同名变量
+        }
+    }
+    public void callInnerPlay(){
+        Inner inner = new Inner();
+        inner.play();
+    }
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        Outter outter = new Outter();
+        Outter.Inner inner = new Outter().new Inner();  // 创建内部类
+        inner.play();
+        outter.callInnerPlay();  // 在外部类中调用内部类
+    }
+}
+```
+
+### 静态内部类
+
+```java
+public class Test {
+    public static void main(String[] args)  {
+        Outter.Inner inner = new Outter.Inner();
+    }
+}
+ 
+class Outter {
+    public Outter() {
+         
+    }
+    static class Inner {
+        public Inner() {
+        }
+    }
+}
+```
+
+### 局部内部类
+
+方法内部类定义在外部类的方法中，局部内部类和成员内部类基本一致，只是它们的作用域不同，方法内部类只能在该方法中被使用，出了该方法就会失效。 对于这个类的使用主要是应用与解决比较复杂的问题，想创建一个类来辅助我们的解决方案，到那时又不希望这个类是公共可用的，所以就产生了局部内部类。
+
+```java
+class People {
+    public People() {
+    }
+}
+
+class Man {
+    public Man() {
+    }
+
+    public People getWoman() {
+        class Woman extends People {   //局部内部类
+            int age = 0;  // 只有函数内能访问局部内部类
+            public void getAge(){
+                System.out.println(this.age);
+            }
+        }
+        return new Woman();
+    }
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        Man man = new Man();
+        People woman = man.getWoman();
+    }
+}
+```
+
+
+
+### 匿名内部类
+
+匿名内部类不能定义任何静态成员、方法和类，只能创建匿名内部类的一个实例。一个匿名内部类一定是在new的后面，用其隐含实现一个接口或实现一个类。
+
+#### 未使用匿名内部类
+
+```java
+abstract class Person {
+    public abstract void eat();
+}
+ 
+class Child extends Person {
+    public void eat() {
+        System.out.println("eat something");
+    }
+}
+ 
+public class Demo {
+    public static void main(String[] args) {
+        Person p = new Child();
+        p.eat();
+    }
+}
+```
+
+
+
+#### 在接口上使用匿名内部类
+
+```java
+interface Person {
+    public void eat();
+}
+ 
+public class Demo {
+    public static void main(String[] args) {
+        Person p = new Person() {
+            @Override
+            public void eat() {
+                System.out.println("eat something");
+            }
+        };
+        p.eat();
+    }
+}
+```
+
+#### 在抽象方法上使用匿名内部类
+
+```java
+abstract class Person {
+    public abstract void eat();
+}
+ 
+public class Demo {
+    public static void main(String[] args) {
+        Person p = new Person() {
+            @Override
+            public void eat() {
+                System.out.println("eat something");
+            }
+        };
+        p.eat();
+    }
+}
+```
+
+#### lambda表达式
+
+```java
+// 1. 不需要参数,返回值为 5  
+() -> 5  
+  
+// 2. 接收一个参数(数字类型),返回其2倍的值  
+x -> 2 * x  
+  
+// 3. 接受2个参数(数字),并返回他们的差值  
+(x, y) -> x – y  
+  
+// 4. 接收2个int型整数,返回他们的和  
+(int x, int y) -> x + y  
+  
+// 5. 接受一个 string 对象,并在控制台打印,不返回任何值(看起来像是返回void)  
+(String s) -> System.out.print(s)
+```
+
+```java
+// 匿名内部类使用lambda表达式，这种又叫做函数式接口，在接口Person上可以加上@FunctionalInterface(不加也没有报错)，函数式接口(Functional Interface)就是一个有且仅有一个抽象方法，但是可以有多个非抽象方法的接口。函数式接口可以被隐式转换为 lambda 表达式。
+interface Person {
+    public void eat();
+}
+ 
+public class Demo {
+    public static void main(String[] args) {
+        Person p = () -> System.out.println("eating something");
+        p.eat();
+    }
+}
+```
+
+## 通配符和边界
+
+* <? extends T>：是指 **“上界通配符（Upper Bounds Wildcards）”**
+
+* <? super T>：是指 **“下界通配符（Lower Bounds Wildcards）”**
+
+### 为什么要用通配符和边界？
+
+使用泛型的过程中，经常出现一种很别扭的情况。比如按照题主的例子，我们有Fruit类，和它的派生类Apple类。
+
+```java
+class Fruit {}
+class Apple extends Fruit {}
+```
+
+然后有一个最简单的容器：Plate类。盘子里可以放一个泛型的“东西”。我们可以对这个东西做最简单的“放”和“取”的动作：set( )和get( )方法。
+
+```java
+class Plate<T>{
+    private T item;
+    public Plate(T t){item=t;}
+    public void set(T t){item=t;}
+    public T get(){return item;}
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        Plate<Fruit> plate = new Plate<Apple>(new Apple());  // 定义一个装水果的盘子，编译报错
+    }
+}
+```
+
+#### 上界通配符
+
+```java
+Plate<? extends Fruit>
+Plate<? extends Fruit> p=new Plate<Apple>(new Apple());  // ok了
+```
+
+#### 下界通配符
+
+```java
+Plate<？ super Fruit>
+```
+
+上界通配符包含了本身和子类，下届通配符包含了本身和父类。
