@@ -481,3 +481,91 @@ Plate<？ super Fruit>
 ```
 
 上界通配符包含了本身和子类，下届通配符包含了本身和父类。
+
+## Java流Stream
+
+这种风格将要处理的元素集合看作一种流， 流在管道中传输， 并且可以在管道的节点上进行处理， 比如筛选， 排序，聚合等。
+
+元素流在管道中经过中间操作（intermediate operation）的处理，最后由最终操作(terminal operation)得到前面处理的结果。
+
+### 生成流
+
+* **stream()** − 为集合创建串行流。
+* **parallelStream()** − 为集合创建并行流。
+
+```java
+List<String> strings = Arrays.asList("abc", "", "bc", "efg", "abcd", "", "jkl");
+List<String> collect = strings.stream().filter(string -> !string.isEmpty()).collect(Collectors.toList());
+```
+
+### forEach
+
+```java
+Random random = new Random();
+random.ints().limit(10).forEach(System.out::println);
+```
+
+### map
+
+```java
+List<Integer> numbers = Arrays.asList(3, 2, 2, 3, 7, 3, 5);
+// 获取对应的平方数
+List<Integer> squaresList = numbers.stream().map( i -> i*i).distinct().collect(Collectors.toList());
+```
+
+### filter
+
+```java
+List<String>strings = Arrays.asList("abc", "", "bc", "efg", "abcd","", "jkl");
+// 获取空字符串的数量
+long count = strings.stream().filter(string -> string.isEmpty()).count();
+```
+
+### limit
+
+```java
+Random random = new Random();
+random.ints().limit(10).forEach(System.out::println);
+```
+
+### sorted
+
+```java
+Random random = new Random();
+random.ints().limit(10).sorted().forEach(System.out::println);
+```
+
+### parallel
+
+```java
+List<String> strings = Arrays.asList("abc", "", "bc", "efg", "abcd","", "jkl");
+// 获取空字符串的数量
+int count = strings.parallelStream().filter(string -> string.isEmpty()).count();
+```
+
+### Collectors
+
+```java
+List<String>strings = Arrays.asList("abc", "", "bc", "efg", "abcd","", "jkl");
+List<String> filtered = strings.stream().filter(string -> !string.isEmpty()).collect(Collectors.toList());
+ 
+System.out.println("筛选列表: " + filtered);
+String mergedString = strings.stream().filter(string -> !string.isEmpty()).collect(Collectors.joining(", "));
+System.out.println("合并字符串: " + mergedString);
+```
+
+### 统计
+
+```java
+List<Integer> numbers = Arrays.asList(3, 2, 2, 3, 7, 3, 5);
+ 
+IntSummaryStatistics stats = numbers.stream().mapToInt((x) -> x).summaryStatistics();
+ 
+System.out.println("列表中最大的数 : " + stats.getMax());
+System.out.println("列表中最小的数 : " + stats.getMin());
+System.out.println("所有数之和 : " + stats.getSum());
+System.out.println("平均数 : " + stats.getAverage());
+```
+
+## Java8函数接口
+
