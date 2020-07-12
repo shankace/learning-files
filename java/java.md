@@ -569,3 +569,39 @@ System.out.println("平均数 : " + stats.getAverage());
 
 ## Java8函数接口
 
+## Java默认方法
+
+```java
+interface Vehicle {
+    // 默认方法，继承该接口可以不用override print就能直接调用
+    default void print() {
+        System.out.println("我是一辆车!");
+    }
+
+    // 默认静态方法，可以直接Vehicle.blowHorn调用
+    static void blowHorn() {
+        System.out.println("按喇叭!!!");
+    }
+}
+
+interface FourWheeler{
+    default void print(){
+        System.out.println("我是四轮车");
+    }
+}
+
+class Car implements Vehicle, FourWheeler{
+    @Override
+    public void print() {
+        Vehicle.super.print();  // 继承的多个接口有两个以上的默认方法必须重写，在重写中可以调用某一个默认方法
+    }
+}
+
+public class MainApp {
+    public static void main(String[] args) {
+        Vehicle vehicle = new Car();
+        vehicle.print();
+    }
+}
+```
+
