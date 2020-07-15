@@ -212,3 +212,14 @@ git rebase --continue  // 反复执行2-4行命令直到rebase成功，不需要
 ![](rebase.png)
 
 结果是将master分支rebase到了b1的线上。b1合并了master的内容，但是master没有合并b1的内容，此时切换到master中执行git rebase b1不需要再解决冲突就能合并成功，master就会和b1在同一个节点上。
+
+## fetch和pull
+
+1）fetch需要手动合并
+
+```
+git fetch 
+git rebase RETCH_HEAD
+```
+
+2）pull自动强制合并
