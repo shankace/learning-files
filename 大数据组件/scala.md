@@ -237,3 +237,60 @@ object Demo extends App {
 }
 ```
 
+### 集合
+
+#### 基本概念
+
+1）谓词
+
+一个方法、函数或者匿名函数接受一个参数或者多个参数返回一个Boolean值。
+
+```scala
+def isEven(i: Int) = if (i % 2 == 0) true else false
+```
+
+
+
+2）匿名函数
+
+```scala
+(i: Int) => i % 2 == 0
+```
+
+
+
+3）隐式循环
+
+```scala
+val list = List.range(1, 10)
+val events = list.filter(_ % 2 == 0)
+```
+
+#### 集合层级结构
+
+![image-20200715221227743](chart/集合层级结构.png)
+
+![image-20200715221336920](chart/Seq.png)
+
+索引序列IndexedSeq意味着随机存取效率是高效的，比如数组元素。
+
+```scala
+val x = IndexedSeq(1, 2, 3)
+```
+
+线性序列LinearSeq说明集合很方便的被分为头尾部分，并且用head，tail，和isEmpty方法是常见的。
+
+![image-20200715221705312](chart/map.png)
+
+```scala
+val m = Map(1 -> "a", 2 -> "b")
+val m = collection.mutable.Map(1 -> "a", 2 -> "b")
+```
+
+![image-20200715221846649](chart/Set.png)
+
+```scala
+val set = Set(1, 2, 3)
+val set = collection.mutable.Set(1, 2, 3)
+```
+
