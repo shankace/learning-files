@@ -141,6 +141,99 @@ object Main extends App{
     val p = Person
     println(p.setFirstName("z").setLastName("zx"))
 }
-
-
 ```
+
+### 限制特质使用范围
+
+#### 通过继承来限制特质使用范围
+
+```scala
+class Animal
+
+class Cat extends Animal {
+  println("创建Cat实例")
+}
+
+trait Walk extends Cat
+
+class SmallCat extends Cat with Walk {
+  println("创建SmallCat实例")
+}
+
+object Demo extends App {
+  val cat = new Cat with Walk
+  val smallCat = new SmallCat
+}
+```
+
+特质Walk继承了Cat类，则只有Cat类和Cat类的子类可以使用Walk特质。
+
+#### 限定特质只能使用指定子类
+
+和上面等价
+
+```scala
+class Animal
+
+class Cat extends Animal {
+  println("创建Cat实例")
+}
+
+trait Walk {
+  this: Cat =>
+}
+
+class SmallCat extends Cat with Walk {
+  println("创建SmallCat实例")
+}
+
+object Demo extends App {
+  val cat = new Cat with Walk
+  val smallCat = new SmallCat
+}
+```
+
+#### 限定特质被添加必须实现特定方法
+
+```scala
+trait Walk{
+  this: {def walk()} =>
+}
+
+class Animal extends Walk{
+  def walk(): Unit ={
+    println("walking")
+  }
+  def swim(): Unit = {
+    println("swimming")
+  }
+}
+
+object Demo extends App {
+  val cat = new Animal
+  cat.walk()
+  cat.swim()
+}
+```
+
+继承Walk的特质必须实现walk方法
+
+#### 为实例对象添加特质
+
+构造对象时混入日志
+
+```scala
+trait Debug{
+  def log(): Unit ={
+    println("打印日志")
+  }
+}
+
+class Child
+
+object Demo extends App {
+  val child = new Child with Debug
+  child.log()
+}
+```
+
