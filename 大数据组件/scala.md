@@ -237,6 +237,124 @@ object Demo extends App {
 }
 ```
 
+### 函数式编程
+
+##### 匿名函数
+
+```scala
+val x = List.range(1, 10)
+val even = x.filter((i: Int) => i % 2 == 0)  // 声明Int可以去掉
+
+// 等价
+val even = x.filter(_ % 2 == 0)  // 允许使用"_"通配符替换变量名
+
+// 如果一个函数只有一条语句，并且只有一个参数，那么参数不需要特别指定
+x.foreach(println)
+```
+
+##### 将函数作为变量
+
+**=>**可以看做是一个转换器
+
+```scala
+val double = (i: Int) => {i * 2}
+val list = List.range(1, 5)
+
+list.map(double)
+```
+
+###### 像匿名函数一样使用方法
+
+```scala
+def modMethod(i: Int) = i % 2 == 0
+val list = List.range(1, 10)
+list.filter(modMethod)
+```
+
+###### 给已存在的方法或者函数赋给函数变量
+
+```scala
+val c = scala.math.cos _  // 单个变量
+val p = scala.math.pow(_, _) // 多个变量
+val p = scala.math.pow _  // 等价上面那个
+```
+
+##### 定义简单的函数作为参数的方法
+
+1）定义方法，包括期望接受的函数参数的签名
+
+2）定义满足这个签名的一个或多个函数
+
+3）将函数作为参数传递给方法
+
+```scala
+def executeFunction(callback:() => Unit){
+    callback()
+}
+val sayHello = () => {println("Hello")}
+executeFunction(sayHello)
+
+// 两种签名等价
+executeFunction(f:String => Int)
+executeFunction(f:(String) => Int)
+```
+
+###### 传入函数外的其他参数
+
+```scala
+def executeXTimes(callback:() => Unit, numTimes: Int){
+	for(i <- 1 to numTimes) callback()
+}
+```
+
+##### 使用部分应用函数
+
+创建一个函数并且预加载一些值
+
+```scala
+val sum = (a: Int, b: Int, c: Int) => a + b +c
+val f = sum(1, 2, _: Int)
+val f = sum(1, _: Int, _: Int)
+```
+
+##### 创建返回函数的函数
+
+```scala
+def saySomething(prefix: String) = (s: String) => {
+    prefix + " " + s
+}
+```
+
+##### 偏函数
+
+偏函数(Partial Function)，是一个数学概念它不是"函数"的一种, 它跟函数是平行的概念。
+ Scala中的Partia Function是一个Trait，其的类型为PartialFunction[A,B]，其中接收一个类型为A的参数，返回一个类型为B的结果。
+
+```scala
+val pf: PartialFunction[Int, String] = {
+    case 1 => "One"
+    case 2 => "Two"
+    case _ => "Other"
+}
+
+// 偏函数内部有一些方法，比如isDefinedAt、OrElse、 andThen、applyOrElse
+pf.isDefinedAt(1)  // 判断偏函数传入的参数是否在偏函数的范围
+
+// 重写isDefinedAt方法
+val divide = new PartialFunction[Int, Int] {
+    def apply(x: Int) = 42 / x
+    def isDefinedAt(x: Int) = x != 0
+}
+```
+
+##### 偏应用函数
+
+```scala
+
+```
+
+
+
 ### 集合
 
 #### 基本概念
@@ -268,29 +386,24 @@ val events = list.filter(_ % 2 == 0)
 
 #### 集合层级结构
 
-![image-20200715221227743](chart/集合层级结构.png)
+![image-20200716095201045](chart/集合层级.png)
 
-![image-20200715221336920](chart/Seq.png)
+#### 不可变序列
 
-索引序列IndexedSeq意味着随机存取效率是高效的，比如数组元素。
+![不可变集合](chart/不可变集合.png)
 
-```scala
-val x = IndexedSeq(1, 2, 3)
-```
+#### 可变序列1
 
-线性序列LinearSeq说明集合很方便的被分为头尾部分，并且用head，tail，和isEmpty方法是常见的。
+![可变集合](chart/可变集合.png)
 
-![image-20200715221705312](chart/map.png)
+#### 可变序列2
 
-```scala
-val m = Map(1 -> "a", 2 -> "b")
-val m = collection.mutable.Map(1 -> "a", 2 -> "b")
-```
+![image-20200716103649896](chart/可变集合2.png)
 
-![image-20200715221846649](chart/Set.png)
+#### Map
 
-```scala
-val set = Set(1, 2, 3)
-val set = collection.mutable.Set(1, 2, 3)
-```
+![image-20200716103833724](chart/map.png)
 
+#### Set
+
+![image-20200716103939087](chart/Set.png)
