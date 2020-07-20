@@ -390,6 +390,31 @@ val events = list.filter(_ % 2 == 0)
 
 ![不可变集合](chart/不可变集合.png)
 
+##### Array&Vector
+
+```scala
+// 快速创建Array方法，Vector也可以用
+val x = Array.range(1, 10)
+val x = Array.fill(3)("foo")
+val x = Array.tabulate(5)(_*2)
+val x = List(1, 2, 3).toArray
+
+// Array数组大小不能改变，所以不能删除元素，但是能改变元素的值
+x(0) = 10
+
+x.slice(1, 10)  // 第1到第10个元素
+
+// 排序
+scala.util.Sorting.quickSort(x)
+
+// 创建多维数组
+val x = Array.ofDim[String](2, 3)
+x(0)(0) = "a"
+x(0)(1) = "b"
+// 或者
+val x = Array(Array(1, 2, 3), Array(4, 5, 6))
+```
+
 #### 可变序列1
 
 ![可变集合](chart/可变集合.png)
@@ -398,10 +423,104 @@ val events = list.filter(_ % 2 == 0)
 
 ![image-20200716103649896](chart/可变集合2.png)
 
+##### ArrayBuffer
+
+```scala
+val x = ArrayBuffer[String]()
+x += "Ben"
+x += ("Dale", "Harry")
+x += Seq("Gordon", "Big Ed")
+x.append("Laura", "Lucy")
+
+x -= "Ben"
+x -= ("Dale", "Harry")
+x --= Seq("Gordon", "Big Ed")
+x --= Array("a")
+x --= Set("a")
+x.remove(0)
+x.clear
+```
+
+
+
 #### Map
 
 ![image-20200716103833724](chart/map.png)
 
+```scala
+// 可变map
+import collection.mutable.{Map => MMap}
+val m = MMap[String, String]()
+m += ("AL" -> "Alabama")
+m -= "AL"
+m("AK") = "Alaska"
+m -= ("AL", "AZ")
+// 从另一个集合添加多个元素
+m ++= List("CA" -> "California", "CO" -> "Colorado")  // 通过List嵌套元组的添加Map元素
+m ++= List(("CA", "California"), ("CO", "Colorada"))
+
+// 有序map
+import collection.SortedMap
+val map = SortedMap("Kim"->90, "Al"->91)
+
+// 线性Map，LinkedHashMap或者ListMap，只有LinkedHashMap是可变的
+
+// 过滤keys
+val map.retain((k, v)=>k=="Ak")
+map.filterKeys(_ > 2)
+map.filter((t) => t._1 >2)  // 这个key和value都能过滤
+
+// 请求Map中没有的键值
+val map = Map("AL" -> "Alabama").withDefaultValue("Not Found")
+map.getOrElse("FOO", "No such value")
+
+ // 返回Option对象
+val x = map.get("AL")
+
+// 遍历map的三种方法
+for((k, v)<-map){
+	println(s"key:$k, value:$v")
+}
+map.foreach{
+    case(k, v) => println(s"key:$k, value:$v")
+}
+map.foreach(x => println(s"key:${x._1}, value:${x._2}"))
+
+// 遍历keys
+map.keys.foreach((x) => println)
+
+// 遍历values
+map.mapValues(_.toUpperCase)
+
+// 获取所有keys或者values
+map.keys
+map.values
+
+// 反转键值
+for((k, v) <- map){
+    yield(v, k)
+}
+
+// 是否包含某个key
+map.contains("FOO")
+// 是否包含某个value
+map.valuesIterator.exists(_.contains("FOO"))  // 值中是否存在字串"FOO"
+
+
+```
+
+![image-20200720194935482](chart/更多映射和特质.png)
+
 #### Set
 
 ![image-20200716103939087](chart/Set.png)
+
+#### 元组
+
+```scala
+// 创建元组，元组可以包含不同类型的元素
+val x = (1, 2, 3, 4, "hello")
+// 创建两个元素的元组
+val x = 1 -> "a"
+```
+
