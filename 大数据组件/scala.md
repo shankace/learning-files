@@ -335,7 +335,7 @@ val pf: PartialFunction[Int, String] = {
     case 1 => "One"
     case 2 => "Two"
     case _ => "Other"
-}
+}  // 使用case可以快速定义偏函数，{}+case
 
 // 偏函数内部有一些方法，比如isDefinedAt、OrElse、 andThen、applyOrElse
 pf.isDefinedAt(1)  // 判断偏函数传入的参数是否在偏函数的范围
@@ -345,12 +345,10 @@ val divide = new PartialFunction[Int, Int] {
     def apply(x: Int) = 42 / x
     def isDefinedAt(x: Int) = x != 0
 }
-```
 
-##### 偏应用函数
-
-```scala
-
+def fun: PartialFunction[Int, String] = {
+    case 1 => "one"
+}
 ```
 
 
