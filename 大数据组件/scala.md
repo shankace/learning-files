@@ -505,9 +505,19 @@ for((k, v) <- map){
 map.contains("FOO")
 // 是否包含某个value
 map.valuesIterator.exists(_.contains("FOO"))  // 值中是否存在字串"FOO"
-
-
 ```
+
+##### Map中最大的键值或者值
+
+```scala
+val map = Map("AL"->80, "Kim"->95, "Teri"->85, "Julia"->90)
+map.max
+map.keysIterator.max
+map.valuesIterator.reduceLeft((x, y) => if (x > y) x else y)
+map.valuesIterator.reduceLeft(_ max _)
+```
+
+
 
 ![image-20200720194935482](chart/更多映射和特质.png)
 
@@ -522,5 +532,135 @@ map.valuesIterator.exists(_.contains("FOO"))  // 值中是否存在字串"FOO"
 val x = (1, 2, 3, 4, "hello")
 // 创建两个元素的元组
 val x = 1 -> "a"
+
+// 通过下划线来访问
+x._1
+
+// 使用可排序集，SortedSet是不可变版本，可变版本是java.util.TreeSet
+val s = scala.collection.SortedSet(10, 4, 8, 2)
+
+// 自定义类实现排序
+class Person(var name: String) extends Ordered[Person]{
+    def compare(that:Person) = {
+        if(this.name==that.name)
+        	0
+        else if(this.name > that.name)
+        	1
+        else
+        	-1
+    }
+}
+```
+
+#### 排序
+
+##### _*变长参数
+
+```scala
+def printAll(strings: String*){
+	strings.foreach(println)
+}
+val fruits = List("Apple", "Banana", "Cherry")
+// 该List无法传入printAll，但是_*可以调整List，让它可以用于printAll
+printAll(fruits:_*)  // _*操作符将序列的每个元素作为单独的参数传递给printAll
+```
+
+##### 用变长参数将排序后的Seq传递给ListMap
+
+```scala
+val x = Map("A"->"Apple", "B"->"Banana", "C"->"Cherry")
+
+// 两种排序
+val seq = x.toSeq.sortBy(_._1)
+val seq = x.toSeq.sortWith(_._1 < _._1)
+ListMap(seq:_*)  // 将seq进行数据转换，将其作为多个参数传递给ListMap或者LinkedHashMap
+
+// 简单排序
+val x = List(2, 1, 4, 5)
+x.sorted
+```
+
+#### Range
+
+```scala
+1 to 10
+1 until 10
+1 to 10 by 2
+
+// 快速创建
+val x = (1 to 10).toList
+val x = (1 to 10).toArray
+val x = (1 to 10).toSet
+
+val x = List.range(1, 10)
+```
+
+#### 集合常用操作
+
+```scala
+// for/yield结构
+val fruits = Array("apple", "banana", "orange")
+val newArray = for(e <- fruits) yield e.toUpperCase  // yield也可以作用在一个代码块中
+
+// zipWithIndex或者zip创建循环计数器
+val days = Array("Sunday", "Monday", "Tuesday", "Webnesday")
+days.zipWithIndex.foreach{
+    case(day, count) => println(s"$count is $day")
+}
+//或者
+days.zipWithIndex.foreach{
+    d => println(s"${d._2} is ${d._1}")
+}
+
+// 迭代器
+val it = Iterator(1, 2, 3)
+it.foreach(prinln)
+
+// 分割序列
+val x = List(1, 2, 3, 4, 5)
+val group = x.groupBy(_ > 3)  // Map(false -> List(1, 2, 3), true -> List(4, 5))
+// 访问
+group(true) 
+//或者
+group(false)
+x.partition(_ > 3)  // (List(4, 5),List(1, 2, 3))
+x.span(_ < 3)  // (List(4, 5),List(1, 2, 3))
+x.splitAt(2)  // (List(4, 5),List(1, 2, 3))
+
+// zip和unzip
+val women = List("Kim", "Julia")
+val men = List("Al", "Terry")
+val couples = women zip men  // List((Kim,Al), (Julia,Terry))
+val (women, men) = couples.unzip
+
+// reduceLeft
+val x = Array(1, 2, 3)
+x.reduceLeft(_ + _)
+x.reduceLeft((x, y) => x + y)
+x.foldLeft(10)(_ + _)
+
+// scanLeft相对于reduceLeft它返回的是一个集合
+x.scanLeft(10)(_ * _) // List(10, 10, 20, 60)
+
+// 序列中去重distinct
+val x = Vector(1, 1, 2, 3, 4)
+x.distinct
+x.toSet
+
+// 在自定义类中实现distinct需要实现equals和hashCode方法
+
+// 合并序列集合
+val a = Array(1, 2, 3)
+val b = Array(4, 5, 6)
+a ++= b
+a.intersect(b)
+a.union(b)
+a diff b
+
+// 集合转字符串
+val a = Array("apple", "banana", "cherry")
+a.mkString
+a.mkString(" ")  // apple banana cherry
+a.mkString("[", ",", "]")  // 加上前缀、间隔和后缀
 ```
 
