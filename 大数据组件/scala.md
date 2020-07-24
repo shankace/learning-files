@@ -664,3 +664,113 @@ a.mkString(" ")  // apple banana cherry
 a.mkString("[", ",", "]")  // 加上前缀、间隔和后缀
 ```
 
+### 类型
+
+scala使用型变、边界和约束来表示泛型类型。
+
+#### 型变
+
+![image-20200723191307408](chart/型变.png)
+
+```scala
+class Grandparent
+class Parent extends Grandparent
+class Child extends Parent
+
+class InvariantClass[A]
+class CovariantClass[+A]
+class Contravariant[-A]
+
+class VarianceExample {
+  def invarFunc(x: InvariantClass[Parent])
+  def covarFunc(x: CovariantClass[Parent])
+  def contraFunc(x: Contravariant[Parent])
+
+  invarFunc(new InvariantClass[Child]) // won't compile
+  invarFunc(new InvariantClass[Parent]) // success
+  invarFunc(new InvariantClass[Grandparent]) // won't compile
+
+  covarFunc(new Contravariant[Child]) // success
+  covarFunc(new Contravariant[Parent]) // success
+  covarFunc(new Contravariant[Grandparent]) // won't compile
+
+  contraFunc(new Contravariant[Child]) // won't compile
+  contraFunc(new Contravariant[Parent]) // success
+  contraFunc(new Contravariant[Grandparent]) // success
+}
+```
+
+#### 边界
+
+![image-20200724100542255](chart/边界.png)
+
+```  scala
+A =:= B  // A must be equal to B
+A <:< B  // A must be a subtype of B
+```
+
+#### 泛型类
+
+```scala
+class Node[A]
+
+class Animal
+class Cat extends Animal
+class Dog extends Animal
+
+class LinkedList[A, T] {
+  private val array = new ArrayBuffer[A]()
+  private val arrayNode = new ArrayBuffer[Node[T]]()
+  def add(a: A): Unit = {
+    array.append(a)
+  }
+
+  def addNode(node: Node[T]): Unit = {
+    arrayNode.append(node)
+  }
+
+  def printArray(): Unit = {
+    println(array.toString())
+  }
+
+  def printNode(): Unit = {
+    println(arrayNode.toString())
+  }
+}
+
+object Demo extends App {
+  val array = new LinkedList[String, Animal]
+  array.add("A")
+  array.add("B")
+  array.addNode(new Node[Animal])
+  array.addNode(new Node[Cat])  // 这里won't compile，需要把T改成+T
+  array.printArray()
+  array.printNode()
+}
+```
+
+#### 泛型方法
+
+```scala
+object test {
+  def printElem[A](seq: Seq[A]) {
+    seq.foreach(println(_))
+  }
+}
+
+object Demo extends App {
+  val s = Seq(1, 2, 3, 4)
+  test.printElem(s)
+}
+```
+
+#### 鸭子类型(结构化类型)
+
+```scala
+def callSpeak[A <: { def speak(): Unit }](obj: A) {
+    obj.speak()
+}
+```
+
+该方法传入的对象需要实现了speak方法。
+
