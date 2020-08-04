@@ -187,3 +187,50 @@ val df2RDD = df.as[Spu].rdd
 df = mergeDF.selectExpr("store_code", "day_night", "if(count>=6, categorycode2, 'xxx') as categorycode2", "spucode", "nums", "count")  //每个字符串代表一个字段，里面可以加入一些sparksql自带的函数进行处理
 ```
 
+# Spark应用
+
+## 创建RDD、DF、DS
+
+```scala
+import org.apache.spark.sql.SparkSession
+
+// 创建RDD
+val conf = new SparkConf().setAppName("App").setMaster("local[4]")
+val sc = new SparkContext(conf)
+sc.textFile("data.txt")
+
+rdd = sc.parallelize(Seq("zzx", "cfj", "xmh", "zll"))
+
+val peopleRDD: RDD[String] = spark.sparkContext.textFile("E:\\project\\learn\\src\\main\\resources\\people.txt")
+
+
+// 创建Dataframe
+val spark = SparkSession
+        .builder()
+        .appName("zzxApp")
+        .master("local[6]")
+        .getOrCreate()
+val df = spark.read.json("people.json")
+
+val df = Seq(("zzx", 10, "female"), ("cfj", 8, "male")).toDF("name", "age", "sex")
+
+// 创建Dataset
+case class Person(name: String, age: Long)
+val ds = Seq(Person("zzx", 10)).toDS()
+
+val peopleDS = spark.read.json("people.json").toDS()  // DF转DS
+
+// RDD转DF Inferring the Schema Using Reflection
+
+// RDD转DF Programmatically Specifying the Schema
+val peopleRDD: RDD[String] = spark.sparkContext.textFile("E:\\project\\learn\\src\\main\\resources\\people.txt")
+val schemaString = "name age"
+val fields: Array[StructField] = schemaString.split(" ").map(fieldName => StructField(fieldName,
+    StringType, nullable = true))
+val schema: StructType = StructType(fields)
+val rowRDD: RDD[Row] = peopleRDD.map(_.split(",")).map(x => Row(x(0), x(1).trim()))
+val peopleDF = spark.createDataFrame(rowRDD, schema)
+peopleDF.show()
+peopleRDD.map(_.split(","))
+```
+
