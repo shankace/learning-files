@@ -220,6 +220,8 @@ val ds = Seq(Person("zzx", 10)).toDS()
 
 val peopleDS = spark.read.json("people.json").toDS()  // DF转DS
 
+val peopleDS = spark.read.json("people.json").as[Person]  // DF转DS
+
 // RDD转DF Inferring the Schema Using Reflection
 
 // RDD转DF Programmatically Specifying the Schema
