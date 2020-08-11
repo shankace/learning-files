@@ -213,7 +213,7 @@ git rebase --continue  // 反复执行2-4行命令直到rebase成功，不需要
 
 结果是将master分支rebase到了b1的线上。b1合并了master的内容，但是master没有合并b1的内容，此时切换到master中执行git rebase b1不需要再解决冲突就能合并成功，master就会和b1在同一个节点上。
 
-### 暂存
+### stash(执行存储)
 
  git 切换分支时会把未add或未commit的内容带过去,因为未add的内容不属于任何一个分支， 未commit的内容也不属于任何一个分支。 也就是说，对于所有分支而言， 工作区和暂存区是公共的。
 
