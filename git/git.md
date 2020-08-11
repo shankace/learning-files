@@ -213,6 +213,32 @@ git rebase --continue  // 反复执行2-4行命令直到rebase成功，不需要
 
 结果是将master分支rebase到了b1的线上。b1合并了master的内容，但是master没有合并b1的内容，此时切换到master中执行git rebase b1不需要再解决冲突就能合并成功，master就会和b1在同一个节点上。
 
+### 暂存
+
+ git 切换分支时会把未add或未commit的内容带过去,因为未add的内容不属于任何一个分支， 未commit的内容也不属于任何一个分支。 也就是说，对于所有分支而言， 工作区和暂存区是公共的。
+
+暂存
+
+```
+git stash save "save message"
+
+git stash list  //查看stash了哪些存储
+
+git stash show //显示做了哪些改动，默认show第一个存储,如果要显示其他存贮，后面加stash@{$num}，比如第二个 git stash show stash@{1}
+
+git stash show -p  //显示第一个存储的改动，如果想显示其他存存储，命令：git stash show  stash@{$num}  -p ，比如第二个：git stash show  stash@{1}  -p
+
+git stash apply //应用某个存储,但不会把存储从存储列表中删除，默认使用第一个存储,即stash@{0}，如果要使用其他个，git stash apply stash@{$num} ， 比如第二个：git stash apply stash@{1} 
+
+git stash pop  //命令恢复之前缓存的工作目录，将缓存堆栈中的对应stash删除，并将对应修改应用到当前的工作目录下,默认为第一个stash,即stash@{0}，如果要应用并删除其他stash，命令：git stash pop stash@{$num} ，比如应用并删除第二个：git stash pop stash@{1}
+
+git stash drop stash@{$num} //丢弃stash@{$num}存储，从列表中删除这个存储
+
+git stash clear //删除所有缓存的stash
+```
+
+
+
 ## fetch和pull
 
 1）fetch需要手动合并
